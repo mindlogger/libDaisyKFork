@@ -266,6 +266,7 @@ AudioHandle::Impl::SetSampleRate(SaiHandle::Config::SampleRate samplerate)
     return Result::OK;
 }
 
+
 // This turned into a very large function due to the bit-depth conversions..
 // I didn't want to do a conditional conversion in a single loop because it seemed
 // far less efficient, so this is where I landed.
@@ -397,8 +398,10 @@ void AudioHandle::Impl::InternalCallback(int32_t* in, int32_t* out, size_t size)
                     if(chns > 2)
                     {
                         fin[2][i / 2]
-                            = s242f(audio_handle.buff_rx_[1][offset + i])
-                              * audio_handle.postgain_recip_;
+                            = convert24BitMEMS2Float(
+                                  audio_handle.buff_rx_[1][offset + i])
+                              * audio_handle
+                                    .postgain_recip_; //CHANGED SHIT IN THIS LINE
                         fin[3][i / 2]
                             = s242f(audio_handle.buff_rx_[1][offset + i + 1])
                               * audio_handle.postgain_recip_;

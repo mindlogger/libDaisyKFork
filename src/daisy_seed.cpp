@@ -333,12 +333,34 @@ void DaisySeed::ConfigureAudio()
     // Then Initialize
     sai_1_handle_.Init(sai_config);
 
+    // SAI ADDITION START
+    SaiHandle::Config sai_config2;
+    sai_config2.periph          = SaiHandle::Config::Peripheral::SAI_2;
+    sai_config2.sr              = SaiHandle::Config::SampleRate::SAI_48KHZ;
+    sai_config2.bit_depth       = SaiHandle::Config::BitDepth::SAI_24BIT;
+    sai_config2.a_sync          = SaiHandle::Config::Sync::SLAVE;
+    sai_config2.b_sync          = SaiHandle::Config::Sync::MASTER;
+    sai_config2.pin_config.fs   = seed::D27;
+    sai_config2.pin_config.mclk = seed::D24;
+    sai_config2.pin_config.sck  = seed::D28;
+
+    // Data Line Directions
+    sai_config2.a_dir         = SaiHandle::Config::Direction::TRANSMIT;
+    sai_config2.pin_config.sa = seed::D26;
+    sai_config2.b_dir         = SaiHandle::Config::Direction::RECEIVE;
+    sai_config2.pin_config.sb = seed::D25;
+
+    // Then Initialize
+    sai_2_handle_.Init(
+        sai_config2); //DOING THIS ALREADY PULLS THE SAI2 DOUT OF THE MEMS HIGH!
     // Audio
     AudioHandle::Config audio_config;
     audio_config.blocksize  = 48;
     audio_config.samplerate = SaiHandle::Config::SampleRate::SAI_48KHZ;
     audio_config.postgain   = 1.f;
-    audio_handle.Init(audio_config, sai_1_handle_);
+    //audio_handle.Init(audio_config, sai_1_handle_);
+    audio_handle.Init(
+        audio_config, sai_1_handle_, sai_2_handle_); //SAI2 CONFIG ADDED
 }
 void DaisySeed::ConfigureDac()
 {

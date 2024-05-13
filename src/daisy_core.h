@@ -140,6 +140,16 @@ FORCE_INLINE float s242f(int32_t x)
     x = (x ^ S24SIGN) - S24SIGN; //sign extend aka ((x<<8)>>8)
     return (float)x * S242F_SCALE;
 }
+
+/**
+    Converts strange ass MEMS MIC Signed 24-bit to float
+ */
+FORCE_INLINE float convert24BitMEMS2Float(int32_t src)
+{
+    return (((float)src) - (16562240 + 4928)) / ((16562240 + 4928) / 2.0) * 30;
+}
+
+
 /**
     Converts float to Signed 24-bit
  */

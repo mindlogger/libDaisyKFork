@@ -186,6 +186,7 @@ class DaisySeed
     float callback_rate_;
 
     SaiHandle sai_1_handle_;
+    SaiHandle sai_2_handle_;
 };
 
 /** seed namespace contains pinout constants for addressing 
