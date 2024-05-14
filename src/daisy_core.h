@@ -146,7 +146,7 @@ FORCE_INLINE float s242f(int32_t x)
  */
 FORCE_INLINE float convert24BitMEMS2Float(int32_t src)
 {
-    return (((float)src) - (16562240 + 4928)) / ((16562240 + 4928) / 2.0) * 30;
+    return (((float)src) - (16562240 + 4928)) / ((16562240 + 4928) / 2.0);
 }
 
 
