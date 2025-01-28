@@ -140,6 +140,7 @@ class MidiUartTransport
     }
 };
 
+
 /**
     @brief Simple MIDI Handler \n
     Parses bytes from an input into valid MidiEvents. \n
@@ -152,6 +153,9 @@ template <typename Transport>
 class MidiHandler
 {
   public:
+    typedef void (*ParseCallbackExt)(uint8_t* data, size_t size);
+    ParseCallbackExt externalParseCallback;
+
     MidiHandler() {}
     ~MidiHandler() {}
 
@@ -159,15 +163,21 @@ class MidiHandler
     {
         typename Transport::Config transport_config;
     };
-
     /** Initializes the MidiHandler
      *  \param config Configuration structure used to define specifics to the MIDI Handler.
      */
+
+
     void Init(Config config)
     {
         config_ = config;
         transport_.Init(config_.transport_config);
         parser_.Init();
+    }
+
+    void setExternalParseCallback(ParseCallbackExt ext)
+    {
+        externalParseCallback = ext;
     }
 
     /** Starts listening on the selected input mode(s).
@@ -196,7 +206,6 @@ class MidiHandler
      */
     bool HasEvents() const { return event_q_.GetNumElements() > 0; }
 
-    bool RxActive() { return transport_.RxActive(); }
 
     /** Pops the oldest unhandled MidiEvent from the internal queue
     \return The event to be handled
@@ -239,6 +248,9 @@ class MidiHandler
         {
             handler->Parse(data[i]);
         }
+        /*ADDED MIDI THRU START*/
+        handler->externalParseCallback(data, size);
+        /*ADDED MIDI THRU END*/
     }
 };
 
