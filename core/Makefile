@@ -53,7 +53,7 @@ C_SOURCES += \
 $(SYSTEM_FILES_DIR)/startup_stm32h750xx.c
 
 # Expose platform configuration to all compilation units (CMSIS DSP components)
-C_INCLUDES += -I$(LIBDAISY_DIR)/Drivers/CMSIS-Device/ST/STM32H7xx/Include/stm32h7xx.h 
+C_INCLUDES += -I$(LIBDAISY_DIR)/Drivers/CMSIS-Device/ST/STM32H7xx/Include
 
 
 #ASM_SOURCES += \
