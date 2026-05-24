@@ -230,7 +230,7 @@ class MidiHandler
     Config               config_;
     Transport            transport_;
     MidiParser           parser_;
-    FIFO<MidiEvent, 256> event_q_;
+    FIFO<MidiEvent, 8> event_q_;
 
     static void ParseCallback(uint8_t* data, size_t size, void* context)
     {

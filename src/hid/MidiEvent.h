@@ -1,5 +1,5 @@
-// TODO: make this adjustable
-#define SYSEX_BUFFER_LEN 128
+// Sized for the largest SysEx frame in the XoneL protocol (WRITE_CHUNK/CHUNK_RESPONSE = 595 payload bytes)
+#define SYSEX_BUFFER_LEN 640
 
 namespace daisy
 {
@@ -243,7 +243,7 @@ struct MidiEvent
     int                channel;                      /**< & */
     uint8_t            data[2];                      /**< & */
     uint8_t            sysex_data[SYSEX_BUFFER_LEN]; /**< & */
-    uint8_t            sysex_message_len;
+    uint16_t           sysex_message_len;
     SystemCommonType   sc_type;
     SystemRealTimeType srt_type;
     ChannelModeType    cm_type;
