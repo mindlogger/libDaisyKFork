@@ -75,8 +75,11 @@ class MidiUsbTransport::Impl
 // Global Impl
 static MidiUsbTransport::Impl midi_usb_handle;
 
+volatile uint32_t g_usb_rx_call_count = 0;
+
 void ReceiveCallback(uint8_t* buffer, uint32_t* length)
 {
+    g_usb_rx_call_count++;
     if(midi_usb_handle.RxActive())
     {
         for(uint16_t i = 0; i < *length; i += 4)
@@ -299,12 +302,28 @@ void MidiUsbTransport::Impl::MidiToUsb(uint8_t* buffer, size_t size)
     {
         // Search for next status byte or end
         size_t next_status = status_index;
-        for(size_t j = status_index + 1; j < size; j++)
+        if(buffer[status_index] == 0xF0)
         {
-            if(buffer[j] & 0x80)
+            // SysEx: find F7 and include it — F7 must be in the terminating
+            // USB-MIDI packet (CIN 0x05/06/07), not sent as a separate packet.
+            for(size_t j = status_index + 1; j < size; j++)
             {
-                next_status = j;
-                break;
+                if(buffer[j] == 0xF7)
+                {
+                    next_status = j + 1;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            for(size_t j = status_index + 1; j < size; j++)
+            {
+                if(buffer[j] & 0x80)
+                {
+                    next_status = j;
+                    break;
+                }
             }
         }
         if(next_status == status_index)
